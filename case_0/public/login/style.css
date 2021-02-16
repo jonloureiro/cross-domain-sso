@@ -1,0 +1,19 @@
+body {
+  display: flex;
+  min-height: 80vh;
+}
+
+form {
+  min-width: 320px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+form > input {
+  margin-bottom: 12px;
+}
+
+button {
+  cursor: pointer;
+}

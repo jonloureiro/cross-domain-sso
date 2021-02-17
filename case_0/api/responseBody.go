@@ -1,6 +1,6 @@
 package api
 
-type response struct {
+type responseBody struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }

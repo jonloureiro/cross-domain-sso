@@ -16,7 +16,7 @@ type requestBody struct {
 	Password string `json:"password"`
 }
 
-type response struct {
+type responseBody struct {
 	Token string `json:"token"`
 }
 
@@ -25,22 +25,22 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 		return api.HandlerNotAllowed(request)
 	}
 
-	body := requestBody{}
-	err := json.Unmarshal([]byte(request.Body), &body)
+	reqBody := requestBody{}
+	err := json.Unmarshal([]byte(request.Body), &reqBody)
 	if err != nil {
 		return nil, err
 	}
 
-	if body.Username != os.Getenv("USERNAME") {
+	if reqBody.Username != os.Getenv("USERNAME") {
 		return api.HandlerForbidden(request)
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(os.Getenv("PASSWORD")), []byte(body.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(os.Getenv("PASSWORD")), []byte(reqBody.Password))
 	if err != nil {
 		return api.HandlerForbidden(request)
 	}
 
-	responseBody, err := json.Marshal(response{"tokentokentoken"})
+	resBody, err := json.Marshal(responseBody{"tokentokentoken"})
 
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 
 	return &events.APIGatewayProxyResponse{
 		StatusCode: http.StatusOK,
-		Body:       string(responseBody),
+		Body:       string(resBody),
 	}, nil
 }
 

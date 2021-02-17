@@ -12,7 +12,7 @@ func HandlerNotAllowed(request events.APIGatewayProxyRequest) (*events.APIGatewa
 	code := http.StatusMethodNotAllowed
 	message := http.StatusText(code)
 
-	body, err := json.Marshal(response{
+	resBody, err := json.Marshal(responseBody{
 		Code:    code,
 		Message: message,
 	})
@@ -24,6 +24,6 @@ func HandlerNotAllowed(request events.APIGatewayProxyRequest) (*events.APIGatewa
 	return &events.APIGatewayProxyResponse{
 		StatusCode: code,
 		Headers:    map[string]string{"Content-Type": "application/json"},
-		Body:       string(body),
+		Body:       string(resBody),
 	}, nil
 }

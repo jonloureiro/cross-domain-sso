@@ -15,6 +15,10 @@ type requestBody struct {
 	Password string `json:"password"`
 }
 
+type response struct {
+	Token string `json:"token"`
+}
+
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	if request.HTTPMethod != "POST" {
 		return api.HandlerNotAllowed(request)
@@ -22,23 +26,28 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 
 	body := requestBody{}
 	err := json.Unmarshal([]byte(request.Body), &body)
+	if err != nil {
+		return nil, err
+	}
+
+	if body.Username != os.Getenv("USERNAME") {
+		return api.HandlerForbidden(request)
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(os.Getenv("PASSWORD")), []byte(body.Password))
+	if err != nil {
+		return api.HandlerForbidden(request)
+	}
+
+	responseBody, err := json.Marshal(response{"tokentokentoken"})
 
 	if err != nil {
 		return nil, err
 	}
 
-	if body.Username == os.Getenv("USERNAME") {
-		err = bcrypt.CompareHashAndPassword([]byte(os.Getenv("PASSWORD")), []byte(body.Password))
-	} else {
-		return api.HandlerForbidden(request)
-	}
-	if err != nil {
-		return api.HandlerForbidden(request)
-	}
-
 	return &events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       body.Username,
+		Body:       string(responseBody),
 	}, nil
 }
 

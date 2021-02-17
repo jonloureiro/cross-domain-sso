@@ -37,6 +37,7 @@ form.addEventListener('submit', async (event) => {
     passwordInput.disabled = false
     button.disabled = false
     form.reset()
+    usernameInput.focus()
   }
 })
 

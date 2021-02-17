@@ -31,10 +31,20 @@ form.addEventListener('submit', async (event) => {
     const data = await response.json()
     console.log(data);
   } catch (error) {
-    console.error(error)
+    console.log(error)
+    showToast()
     usernameInput.disabled = false
     passwordInput.disabled = false
     button.disabled = false
     form.reset()
   }
 })
+
+function showToast() {
+  const toast = document.querySelector('#toast')
+  toast.innerText = "✗ Something wrong is not right!";
+  toast.classList.add('active');
+  setTimeout(function () {
+    toast.classList.remove('active');
+  }, 4000);
+}

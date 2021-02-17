@@ -60,3 +60,23 @@ button {
   font-weight: bold;
   border-radius: 2px;
 }
+
+#toast {
+  margin: auto;
+  position: fixed;
+  top: 16px;
+  right: -280px;
+  opacity: 0;
+  background-color: #D63D3F;
+  color: #fff;
+  padding: 8px 16px;
+  user-select: none;
+  border: 1px solid WindowFrame;
+  border-radius: 2px;
+  transition: right .5s cubic-bezier(0,1.6,.8,1), opacity 0.75s;
+}
+
+#toast.active {
+  opacity: 1;
+  right: 16px;
+}

@@ -26,15 +26,15 @@ form.addEventListener('submit', async (event) => {
 
   try {
     const response = await fetch('/.netlify/functions/login', requestInit)
-    const data = await response.json()
+    if (!response.ok) throw Error(`${response.status} ${response.statusText}`)
 
-    if (!data.ok) throw Error(`${data.status} ${data.statusText}`)
+    const data = await response.json()
+    console.log(data);
   } catch (error) {
     console.error(error)
     usernameInput.disabled = false
     passwordInput.disabled = false
     button.disabled = false
+    form.reset()
   }
-
-  form.reset()
 })

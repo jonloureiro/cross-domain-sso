@@ -7,11 +7,6 @@ import (
 	"github.com/aws/aws-lambda-go/events"
 )
 
-type response struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-}
-
 // HandlerNotAllowed doc
 func HandlerNotAllowed(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	code := http.StatusMethodNotAllowed

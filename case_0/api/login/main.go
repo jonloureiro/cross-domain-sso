@@ -6,14 +6,14 @@ import (
 	"github.com/jonloureiro/cross-domain-sso/case_0/api"
 )
 
-func handler(request events.APIGatewayProxyRequest) (*api.Response, error) {
+func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	if request.HTTPMethod != "POST" {
 		return api.HandlerNotAllowed(request)
 	}
 
-	return &api.Response{
+	return &events.APIGatewayProxyResponse{
 		StatusCode: 200,
-		Body:       api.ResponseBody{},
+		Body:       request.Body,
 	}, nil
 }
 

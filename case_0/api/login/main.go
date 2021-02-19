@@ -20,6 +20,19 @@ type responseBody struct {
 	Token string `json:"token"`
 }
 
+func checkCredentials(username, password string) bool {
+	if username != os.Getenv("USERNAME") {
+		return false
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(os.Getenv("PASSWORD")), []byte(password))
+	if err != nil {
+		return false
+	}
+
+	return true
+}
+
 func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResponse, error) {
 	if request.HTTPMethod != "POST" {
 		return api.HandlerNotAllowed(request)
@@ -31,17 +44,11 @@ func handler(request events.APIGatewayProxyRequest) (*events.APIGatewayProxyResp
 		return nil, err
 	}
 
-	if reqBody.Username != os.Getenv("USERNAME") {
-		return api.HandlerForbidden(request)
-	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(os.Getenv("PASSWORD")), []byte(reqBody.Password))
-	if err != nil {
+	if !checkCredentials(reqBody.Username, reqBody.Password) {
 		return api.HandlerForbidden(request)
 	}
 
 	resBody, err := json.Marshal(responseBody{"tokentokentoken"})
-
 	if err != nil {
 		return nil, err
 	}

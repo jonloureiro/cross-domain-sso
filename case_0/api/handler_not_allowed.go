@@ -12,10 +12,7 @@ func HandlerNotAllowed(request events.APIGatewayProxyRequest) (*events.APIGatewa
 	code := http.StatusMethodNotAllowed
 	message := http.StatusText(code)
 
-	resBody, err := json.Marshal(responseBody{
-		Code:    code,
-		Message: message,
-	})
+	resBody, err := json.Marshal(responseBody{code, message})
 
 	if err != nil {
 		return nil, err

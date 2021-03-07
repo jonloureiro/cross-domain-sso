@@ -2,6 +2,9 @@
 
 const { handler } = require('../../api/login')
 
+jest.mock('../../lib/findUserByUsername')
+jest.mock('../../lib/mongoClient')
+
 const request = {
   httpMethod: 'POST',
   body: {
@@ -47,6 +50,15 @@ describe('/api/login', () => {
     ])
     responses.forEach((response) => {
       expect(response.statusCode).toBe(403)
+    })
+  })
+
+  test('Valid credentials', async () => {
+    const responses = await Promise.all([
+      handler(stringifyBody({ ...request }))
+    ])
+    responses.forEach((response) => {
+      expect(response.statusCode).toBe(200)
     })
   })
 })

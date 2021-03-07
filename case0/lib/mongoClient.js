@@ -9,6 +9,6 @@ module.exports = async function getMongoClient () {
     return _mongoClient
   }
 
-  _mongoClient = await MongoClient.connect(process.env.MONGO_URI)
+  _mongoClient = await MongoClient.connect(process.env.MONGO_URI, { useUnifiedTopology: true })
   return _mongoClient
 }

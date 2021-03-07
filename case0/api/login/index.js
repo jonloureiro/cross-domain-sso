@@ -1,3 +1,5 @@
+'use strict'
+
 const httpResponse = require('../../lib/httpResponse')
 
 exports.handler = async function (event) {

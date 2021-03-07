@@ -1,5 +1,6 @@
 'use strict'
 
+const findUserByUsername = require('../../lib/findUserByUsername')
 const httpResponse = require('../../lib/httpResponse')
 const getMongoClient = require('../../lib/mongoClient')
 
@@ -16,10 +17,7 @@ exports.handler = async function (event, context) {
 
   try {
     const mongoClient = await getMongoClient()
-    const result = await mongoClient
-      .db('cross-domain-sso')
-      .collection('users')
-      .findOne({ username: body.username })
+    const result = await findUserByUsername(mongoClient, body.username)
 
     if (!result) return httpResponse.FORBIDDEN
 

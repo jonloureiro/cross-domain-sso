@@ -13,3 +13,9 @@ exports.METHOD_NOT_ALLOWED = {
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ message: http.STATUS_CODES[405] })
 }
+
+exports.SERVICE_UNAVAILABLE = {
+  statusCode: 503,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ message: http.STATUS_CODES[503] })
+}

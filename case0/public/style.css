@@ -49,4 +49,5 @@ input {
 input[type="submit"] {
   color: var(--light);
   background-color: var(--dark);
+  cursor: pointer;
 }

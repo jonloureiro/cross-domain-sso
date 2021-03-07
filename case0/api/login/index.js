@@ -1,11 +1,13 @@
 'use strict'
 
+const bcrypt = require('bcrypt')
+
 const findUserByUsername = require('../../lib/findUserByUsername')
 const httpResponse = require('../../lib/httpResponse')
 const getMongoClient = require('../../lib/mongoClient')
 
 exports.handler = async function (event, context) {
-  context.callbackWaitsForEmptyEventLoop = false
+  if (context) context.callbackWaitsForEmptyEventLoop = false
 
   if (event.httpMethod !== 'POST') return httpResponse.METHOD_NOT_ALLOWED
 
@@ -20,6 +22,9 @@ exports.handler = async function (event, context) {
     const result = await findUserByUsername(mongoClient, body.username)
 
     if (!result) return httpResponse.FORBIDDEN
+
+    const isEqual = await bcrypt.compare(body.password, result.password)
+    if (!isEqual) return httpResponse.FORBIDDEN
 
     return {
       statusCode: 200,

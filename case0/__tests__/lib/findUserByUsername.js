@@ -12,7 +12,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  mongoClient.close()
+  await mongoClient.close()
 })
 
 test('Find an existing user', async () => {

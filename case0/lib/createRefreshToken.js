@@ -6,22 +6,29 @@ const getMongoClient = require('./getMongoClient')
 
 module.exports = async function createRefreshToken (userId) {
   const mongoClient = await getMongoClient()
-  const expiresIn = new Date(Date.now() + 86400000).toISOString()
 
-  const session = await mongoClient
+  const refreshToken = crypto.randomBytes(40).toString('hex')
+  const expiresIn = new Date(Date.now() + 600000).toISOString() // 1d = 86400000
+
+  const { insertedId } = await mongoClient
     .db('cross-domain-sso')
     .collection('sessions')
     .insertOne({
       createBy: userId,
       lastExpiresIn: expiresIn
     })
-  const token = await mongoClient
+
+  await mongoClient
     .db('cross-domain-sso')
     .collection('tokens')
     .insertOne({
-      sessionId: session._id,
-      refreshToken: crypto.randomBytes(40).toString('hex'),
+      sessionId: insertedId,
+      refreshToken,
       expiresIn
     })
-  return token
+
+  return {
+    refreshToken,
+    expiresIn
+  }
 }

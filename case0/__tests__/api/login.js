@@ -4,6 +4,7 @@ const { handler } = require('../../api/login')
 
 jest.mock('../../lib/findUserByUsername')
 jest.mock('../../lib/getMongoClient')
+jest.mock('../../lib/createRefreshToken')
 
 const request = {
   httpMethod: 'POST',
@@ -58,5 +59,7 @@ test('Valid credentials', async () => {
   ])
   responses.forEach((response) => {
     expect(response.statusCode).toBe(200)
+    expect(response.headers).toHaveProperty('Set-Cookie')
+    expect(JSON.parse(response.body)).toHaveProperty('access_token')
   })
 })

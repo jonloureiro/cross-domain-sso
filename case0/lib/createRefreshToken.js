@@ -2,7 +2,10 @@
 
 const crypto = require('crypto')
 
-module.exports = async function createRefreshToken (mongoClient, userId) {
+const getMongoClient = require('./getMongoClient')
+
+module.exports = async function createRefreshToken (userId) {
+  const mongoClient = await getMongoClient()
   const expiresIn = new Date(Date.now() + 86400000).toISOString()
 
   const session = await mongoClient

@@ -1,7 +1,9 @@
 'use strict'
 
 const bcrypt = require('bcrypt')
+const jwt = require('jwt')
 
+const config = require('../../lib/config')
 const findUserByUsername = require('../../lib/findUserByUsername')
 const httpResponse = require('../../lib/httpResponse')
 const getMongoClient = require('../../lib/getMongoClient')
@@ -26,9 +28,10 @@ exports.handler = async function (event, context) {
     const isEqual = await bcrypt.compare(body.password, result.password)
     if (!isEqual) return httpResponse.FORBIDDEN
 
+    const accessToken = jwt.sign({ usr: result.username }, config.SECRET, { expiresIn: 300 })
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Success' })
+      body: JSON.stringify({ access_token: accessToken })
     }
   } catch (error) {
     return httpResponse.SERVICE_UNAVAILABLE

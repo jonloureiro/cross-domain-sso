@@ -23,7 +23,7 @@ test('Find an existing user', async () => {
     .collection('users')
     .insertOne(mockUser)
 
-  const result = await findUserByUsername(mongoClient, username)
+  const result = await findUserByUsername(username)
   expect(result).toEqual(mockUser)
 
   await mongoClient
@@ -34,6 +34,6 @@ test('Find an existing user', async () => {
 
 test('Do not find an existing user', async () => {
   const username = crypto.randomBytes(20).toString('hex')
-  const result = await findUserByUsername(mongoClient, username)
+  const result = await findUserByUsername(username)
   expect(result).toBeFalsy()
 })

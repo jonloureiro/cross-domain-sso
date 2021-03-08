@@ -1,6 +1,6 @@
 'use strict'
 
-module.exports = async function findUserByUsername (mongoClient, username) {
+module.exports = async function findUserByUsername (username) {
   if (username === 'example') {
     return {
       _id: '6044e81557c2a280ffb3f0b7',

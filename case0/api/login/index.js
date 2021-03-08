@@ -1,7 +1,7 @@
 'use strict'
 
 const bcrypt = require('bcrypt')
-const jwt = require('jwt')
+const jwt = require('jsonwebtoken')
 
 const config = require('../../lib/config')
 const findUserByUsername = require('../../lib/findUserByUsername')

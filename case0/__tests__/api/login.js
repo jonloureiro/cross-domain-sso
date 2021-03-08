@@ -3,7 +3,7 @@
 const { handler } = require('../../api/login')
 
 jest.mock('../../lib/findUserByUsername')
-jest.mock('../../lib/mongoClient')
+jest.mock('../../lib/getMongoClient')
 
 const request = {
   httpMethod: 'POST',

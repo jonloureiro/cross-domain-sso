@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 
 const findUserByUsername = require('../../lib/findUserByUsername')
 const httpResponse = require('../../lib/httpResponse')
-const getMongoClient = require('../../lib/mongoClient')
+const getMongoClient = require('../../lib/getMongoClient')
 
 exports.handler = async function (event, context) {
   if (context) context.callbackWaitsForEmptyEventLoop = false

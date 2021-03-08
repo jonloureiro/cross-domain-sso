@@ -1,10 +1,10 @@
 'use strict'
 
 const bcrypt = require('bcrypt')
-const crypto = require('crypto')
 const jwt = require('jsonwebtoken')
 
 const config = require('../../lib/config')
+const createRefreshToken = require('../../lib/createRefreshToken')
 const findUserByUsername = require('../../lib/findUserByUsername')
 const httpResponse = require('../../lib/httpResponse')
 const getMongoClient = require('../../lib/getMongoClient')
@@ -29,12 +29,11 @@ exports.handler = async function (event, context) {
     const isEqual = await bcrypt.compare(body.password, result.password)
     if (!isEqual) return httpResponse.FORBIDDEN
 
-    const refreshToken = crypto.randomBytes(40).toString('hex')
-    const refreshTokenExpiresIn = 86400
+    const { refreshToken, expiresIn } = createRefreshToken(mongoClient, result._id)
     const accessToken = jwt.sign({ usr: result.username }, config.SECRET, { expiresIn: 300 })
     return {
       statusCode: 200,
-      headers: { 'Set-Cookie': `token=${refreshToken}; Max-Age=${refreshTokenExpiresIn}; Secure; HttpOnly;` },
+      headers: { 'Set-Cookie': `token=${refreshToken}; Max-Age=${expiresIn}; Secure; HttpOnly;` },
       body: JSON.stringify({ access_token: accessToken })
     }
   } catch (error) {

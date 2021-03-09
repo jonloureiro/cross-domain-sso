@@ -4,6 +4,7 @@ const crypto = require('crypto')
 
 const createRefreshToken = require('../../lib/createRefreshToken')
 const getMongoClient = require('../../lib/getMongoClient')
+const invalidateRefreshToken = require('../../lib/invalidateRefreshToken')
 
 let mongoClient
 let mockUser
@@ -13,7 +14,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-  await mongoClient.close()
+  await (await getMongoClient()).close()
 })
 
 beforeEach(async () => {
@@ -50,4 +51,21 @@ test('Create a refresh token', async () => {
 
   expect(refreshToken).toBe(token.refreshToken)
   expect(expiresIn.toString()).toBe(token.expiresIn.toString())
+})
+
+test('Invalidate refresh token', async () => {
+  const { refreshToken, expiresIn } = await createRefreshToken(mockUser._id)
+  await invalidateRefreshToken(refreshToken)
+
+  const token = await mongoClient
+    .db('cross-domain-sso')
+    .collection('tokens')
+    .findOne({ refreshToken })
+
+  function timestamp (date) {
+    return (new Date(date)).getTime()
+  }
+
+  expect(timestamp(expiresIn)).toBeGreaterThan(timestamp(token.expiresIn))
+  expect(Date.now()).toBeGreaterThan(timestamp(token.expiresIn))
 })

@@ -49,5 +49,5 @@ test('Create a refresh token', async () => {
     .findOne({ sessionId: session._id })
 
   expect(refreshToken).toBe(token.refreshToken)
-  expect(expiresIn).toBe(token.expiresIn)
+  expect(expiresIn.toString()).toBe(token.expiresIn.toString())
 })

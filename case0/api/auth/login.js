@@ -25,10 +25,12 @@ exports.handler = async function (event, context) {
     if (!result) return httpResponse.FORBIDDEN
 
     const isEqual = await bcrypt.compare(body.password, result.password)
+
     if (!isEqual) return httpResponse.FORBIDDEN
 
     const { refreshToken, expiresIn } = await createRefreshToken(result._id)
     const accessToken = jwt.sign({ usr: result.username }, config.SECRET, { expiresIn: 300 })
+
     return {
       statusCode: 200,
       headers: { 'Set-Cookie': `token=${refreshToken}; Max-Age=${expiresIn}; Secure; HttpOnly;` },

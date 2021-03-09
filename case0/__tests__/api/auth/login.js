@@ -1,6 +1,6 @@
 /* eslint-env jest */
 
-const { handler } = require('../../api/login')
+const { handler } = require('../../../api/auth/login')
 
 jest.mock('../../lib/findUserByUsername')
 jest.mock('../../lib/getMongoClient')

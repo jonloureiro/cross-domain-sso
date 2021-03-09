@@ -8,7 +8,7 @@ module.exports = async function createRefreshToken (userId) {
   const mongoClient = await getMongoClient()
 
   const refreshToken = crypto.randomBytes(40).toString('hex')
-  const expiresIn = new Date(Date.now() + 600000).toISOString() // 1d = 86400000
+  const expiresIn = new Date(Date.now() + 600000) // 10min = 600000; 1d = 86400000
 
   const { insertedId } = await mongoClient
     .db('cross-domain-sso')

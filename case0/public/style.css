@@ -22,6 +22,11 @@ header {
 
 main {
   margin: auto;
+  display: none;
+}
+
+main#loading {
+  display: block;
 }
 
 h1, h2 {
@@ -46,7 +51,7 @@ input {
   border-radius: 2px;
 }
 
-input[type="submit"] {
+button {
   color: var(--light);
   background-color: var(--dark);
   cursor: pointer;

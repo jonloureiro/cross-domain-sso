@@ -1,0 +1,33 @@
+<!-- By Sam Herbert (@sherb), for everyone. More @ http://goo.gl/7AJzbL -->
+<svg width="72" height="20" viewBox="0 0 72 20" xmlns="http://www.w3.org/2000/svg" fill="#E8F1FF">
+    <circle cx="14" cy="10" r="6">
+        <animate attributeName="r" from="6" to="6"
+                 begin="0s" dur="0.8s"
+                 values="6;3;6" calcMode="linear"
+                 repeatCount="indefinite" />
+        <animate attributeName="fill-opacity" from="1" to="1"
+                 begin="0s" dur="0.8s"
+                 values="1;.5;1" calcMode="linear"
+                 repeatCount="indefinite" />
+    </circle>
+    <circle cx="36" cy="10" r="3" fill-opacity="0.3">
+        <animate attributeName="r" from="3" to="3"
+                 begin="0s" dur="0.8s"
+                 values="3;6;3" calcMode="linear"
+                 repeatCount="indefinite" />
+        <animate attributeName="fill-opacity" from="0.5" to="0.5"
+                 begin="0s" dur="0.8s"
+                 values=".5;1;.5" calcMode="linear"
+                 repeatCount="indefinite" />
+    </circle>
+    <circle cx="58" cy="10" r="6">
+        <animate attributeName="r" from="6" to="6"
+                 begin="0s" dur="0.8s"
+                 values="6;3;6" calcMode="linear"
+                 repeatCount="indefinite" />
+        <animate attributeName="fill-opacity" from="1" to="1"
+                 begin="0s" dur="0.8s"
+                 values="1;.5;1" calcMode="linear"
+                 repeatCount="indefinite" />
+    </circle>
+</svg>

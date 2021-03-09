@@ -9,23 +9,43 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
   <link href="https://unpkg.com/sanitize.css@12.0.1/evergreen.css" rel="stylesheet" />
   <link href="https://unpkg.com/sanitize.css@12.0.1/forms.evergreen.css" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
   <header>
     <h1>Case 0</h1>
   </header>
-  <main>
-    <form action="">
+
+  <main id="loading">
+    <img src="/spinner.svg">
+  </main>
+
+  <main id="withUser">
+    <h2>Sessions</h2>
+    <form id="logoutForm">
+      <button>Logout</button>
+    </form>
+    <section>
+      <h3>Date</h3>
+      <ul>
+        <li>dopaskdakdopa</li>
+        <li>dopaskdakdopa</li>
+      </ul>
+    </section>
+  </main>
+
+  <main id="withoutUser">
+    <form id="loginForm">
       <h2>Login</h2>
       <label for="username">Username</label>
-      <input type="text" id="username" value="example">
+      <input type="text" id="username" value="example" required>
       <label for="password">Password</label>
-      <input type="password" id="password" value="1">
-      <input type="submit" value="Sign In" autofocus>
+      <input type="password" id="password" value="1" required>
+      <button autofocus>Sign In</button>
     </form>
   </main>
+  <script src="main.js"></script>
 </body>
 
 </html>

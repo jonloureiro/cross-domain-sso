@@ -13,20 +13,20 @@ exports.handler = async function (event, context) {
 
   if (event.httpMethod !== 'POST') return httpResponse.METHOD_NOT_ALLOWED
 
-  if (!event.body) return httpResponse.FORBIDDEN
+  if (!event.body) return httpResponse.UNAUTHORIZED
 
   const body = JSON.parse(event.body)
 
-  if (!body.username || !body.password) return httpResponse.FORBIDDEN
+  if (!body.username || !body.password) return httpResponse.UNAUTHORIZED
 
   try {
     const result = await findUserByUsername(body.username)
 
-    if (!result) return httpResponse.FORBIDDEN
+    if (!result) return httpResponse.UNAUTHORIZED
 
     const isEqual = await bcrypt.compare(body.password, result.password)
 
-    if (!isEqual) return httpResponse.FORBIDDEN
+    if (!isEqual) return httpResponse.UNAUTHORIZED
 
     const { refreshToken, expiresIn } = await createRefreshToken(result._id)
     const accessToken = jwt.sign({ usr: result.username }, config.SECRET, { expiresIn: 300 })

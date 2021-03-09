@@ -2,6 +2,12 @@
 
 const http = require('http')
 
+exports.UNAUTHORIZED = {
+  statusCode: 401,
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ message: http.STATUS_CODES[401] })
+}
+
 exports.FORBIDDEN = {
   statusCode: 403,
   headers: { 'Content-Type': 'application/json' },

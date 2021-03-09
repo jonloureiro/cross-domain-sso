@@ -39,7 +39,7 @@ test('Username or password not provided', async () => {
     handler(stringifyBody({ ...request, body: { password: undefined } }))
   ])
   responses.forEach((response) => {
-    expect(response.statusCode).toBe(403)
+    expect(response.statusCode).toBe(401)
   })
 })
 
@@ -49,7 +49,7 @@ test('Invalid username or password', async () => {
     handler(stringifyBody({ ...request, body: { ...request.body, password: '2' } }))
   ])
   responses.forEach((response) => {
-    expect(response.statusCode).toBe(403)
+    expect(response.statusCode).toBe(401)
   })
 })
 

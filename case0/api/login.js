@@ -3,10 +3,10 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const config = require('../../lib/config')
-const createRefreshToken = require('../../lib/createRefreshToken')
-const findUserByUsername = require('../../lib/findUserByUsername')
-const httpResponse = require('../../lib/httpResponse')
+const config = require('../lib/config')
+const createRefreshToken = require('../lib/createRefreshToken')
+const findUserByUsername = require('../lib/findUserByUsername')
+const httpResponse = require('../lib/httpResponse')
 
 exports.handler = async function (event, context) {
   if (context) context.callbackWaitsForEmptyEventLoop = false

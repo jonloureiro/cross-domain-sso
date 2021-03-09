@@ -1,10 +1,10 @@
 /* eslint-env jest */
 
-const { handler } = require('../../../api/auth/login')
+const { handler } = require('../../api/login')
 
-jest.mock('../../../lib/findUserByUsername')
-jest.mock('../../../lib/getMongoClient')
-jest.mock('../../../lib/createRefreshToken')
+jest.mock('../../lib/findUserByUsername')
+jest.mock('../../lib/getMongoClient')
+jest.mock('../../lib/createRefreshToken')
 
 const request = {
   httpMethod: 'POST',

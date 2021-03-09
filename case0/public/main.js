@@ -46,9 +46,27 @@ function initForms (state) {
     event.preventDefault()
 
     const [logoutButton] = logoutForm
+    const logoutButtonText = logoutButton.innerHTML
 
     logoutButton.disabled = true
     logoutButton.innerHTML = '<img src="/dots.svg">'
+
+    const requestInit = {
+      credentials: 'include',
+      method: 'post'
+    }
+
+    try {
+      const response = await fetch('/.netlify/functions/logout', requestInit)
+      if (!response.ok) throw Error(`${response.status} ${response.statusText}`)
+
+      state.accessToken = undefined
+      console.log(response)
+    } catch (error) {
+      console.log(error)
+    }
+    logoutButton.disabled = false
+    logoutButton.innerHTML = logoutButtonText
   }
 
   loginForm.onsubmit = async (event) => {
@@ -74,18 +92,17 @@ function initForms (state) {
     try {
       const response = await fetch('/.netlify/functions/login', requestInit)
       if (!response.ok) throw Error(`${response.status} ${response.statusText}`)
-
       const data = await response.json()
       state.accessToken = data.access_token
       console.log(data)
     } catch (error) {
       console.log(error)
-      usernameInput.disabled = false
-      passwordInput.disabled = false
-      loginButton.disabled = false
-      loginButton.innerHTML = loginButtonText
-      loginForm.reset()
-      usernameInput.focus()
     }
+    usernameInput.disabled = false
+    passwordInput.disabled = false
+    loginButton.disabled = false
+    loginButton.innerHTML = loginButtonText
+    loginForm.reset()
+    usernameInput.focus()
   }
 }

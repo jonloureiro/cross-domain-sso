@@ -29,7 +29,7 @@ exports.handler = async function (event, context) {
     if (!isEqual) return httpResponse.UNAUTHORIZED
 
     const { refreshToken, expiresIn } = await createRefreshToken(result._id)
-    const accessToken = jwt.sign({ usr: result.username }, config.SECRET, { expiresIn: 300 })
+    const accessToken = jwt.sign({ usr: result._id }, config.SECRET, { expiresIn: 300 })
 
     return {
       statusCode: 200,

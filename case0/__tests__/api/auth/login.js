@@ -2,9 +2,9 @@
 
 const { handler } = require('../../../api/auth/login')
 
-jest.mock('../../lib/findUserByUsername')
-jest.mock('../../lib/getMongoClient')
-jest.mock('../../lib/createRefreshToken')
+jest.mock('../../../lib/findUserByUsername')
+jest.mock('../../../lib/getMongoClient')
+jest.mock('../../../lib/createRefreshToken')
 
 const request = {
   httpMethod: 'POST',

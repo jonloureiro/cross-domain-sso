@@ -1,5 +1,7 @@
 'use strict'
 
+// TODO: tests
+
 const httpResponse = require('../lib/httpResponse')
 const invalidateSession = require('../lib/invalidateSession')
 

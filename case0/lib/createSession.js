@@ -4,7 +4,7 @@ const crypto = require('crypto')
 
 const getMongoClient = require('./getMongoClient')
 
-module.exports = async function createRefreshToken (userId) {
+module.exports = async function createSession (userId) {
   const mongoClient = await getMongoClient()
 
   const refreshToken = crypto.randomBytes(40).toString('hex')

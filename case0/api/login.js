@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const config = require('../lib/config')
-const createRefreshToken = require('../lib/createRefreshToken')
+const createSession = require('../lib/createSession')
 const findUserByUsername = require('../lib/findUserByUsername')
 const httpResponse = require('../lib/httpResponse')
 
@@ -28,7 +28,7 @@ exports.handler = async function (event, context) {
 
     if (!isEqual) return httpResponse.UNAUTHORIZED
 
-    const { refreshToken, expiresIn } = await createRefreshToken(result._id)
+    const { refreshToken, expiresIn } = await createSession(result._id)
     const accessToken = jwt.sign({ usr: result._id }, config.SECRET, { expiresIn: 300 })
 
     return {

@@ -56,3 +56,18 @@ button {
   background-color: var(--dark);
   cursor: pointer;
 }
+
+div#loadingSessions {
+  display: flex;
+  margin-top: 64px
+}
+
+div#loadingSessions > img {
+  margin: auto;
+  height: 48px;
+}
+
+
+div#data {
+  display: none;
+}

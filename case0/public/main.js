@@ -1,13 +1,14 @@
 'use strict'
 
-/* global fetch */
+/* global fetch, Headers */
 
 main()
 
 // #############################################################################
 function main () {
   const state = {
-    loading: false
+    loading: false,
+    loadedSessions: false
   }
 
   setInterval(() => updateUI(state), 200)
@@ -31,12 +32,65 @@ function updateUI (state) {
   mainLoading.style.display = 'none'
 
   if (state.accessToken) {
+    getSessions(state)
     mainSessions.style.display = 'block'
     mainForm.style.display = 'none'
   } else {
     mainForm.style.display = 'block'
     mainSessions.style.display = 'none'
+    document.getElementById('dataSessions').innerHTML = ''
   }
+}
+
+// #############################################################################
+async function getSessions (state) {
+  const loadingSessions = document.getElementById('loadingSessions')
+  const dataSessions = document.getElementById('dataSessions')
+
+  if (state.loadedSessions) {
+    loadingSessions.style.display = 'none'
+    dataSessions.style.display = 'block'
+    return
+  }
+
+  loadingSessions.style.display = 'flex'
+  dataSessions.style.display = 'none'
+
+  const headers = new Headers()
+  headers.append('Content-Type', 'application/json')
+  headers.append('Authorization', `Bearer ${state.accessToken}`)
+
+  const requestInit = {
+    credentials: 'include',
+    method: 'get',
+    headers
+  }
+  const response = await fetch('/.netlify/functions/sessions', requestInit)
+  const body = await response.text()
+  if (body) {
+    state.sessions = JSON.parse(body).sessions
+    state.loadedSessions = true
+    console.log(state)
+    renderSessions(state.sessions)
+  }
+}
+
+// #############################################################################
+function renderSessions (sessions) {
+  const renderToken = (token) => `<li>${new Date(token.expiresIn).toLocaleString()}</li>`
+
+  const content = sessions.map(session =>
+`
+<section>
+  <h3>Session: expires in: ${new Date(session.expiresIn).toLocaleString()}</h3>
+  <ul>
+    ${session.tokens.map(renderToken).join()}
+  </ul>
+</section>`
+  ).join('<hr>')
+
+  const dataSessions = document.getElementById('dataSessions')
+  dataSessions.innerHTML = content
 }
 
 // #############################################################################
@@ -53,9 +107,13 @@ function initForms (state) {
     logoutButton.disabled = true
     logoutButton.innerHTML = '<img src="/dots.svg">'
 
+    const headers = new Headers()
+    headers.append('Content-Type', 'application/json')
+
     const requestInit = {
       credentials: 'include',
-      method: 'post'
+      method: 'post',
+      headers
     }
 
     try {
@@ -63,6 +121,8 @@ function initForms (state) {
       if (!response.ok) throw Error(`${response.status} ${response.statusText}`)
 
       state.accessToken = undefined
+      state.sessions = undefined
+      state.loadedSessions = undefined
       const body = await response.text()
       if (body) console.log(JSON.parse(body))
     } catch (error) {

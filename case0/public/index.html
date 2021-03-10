@@ -10,7 +10,8 @@
   <link href="https://unpkg.com/sanitize.css@12.0.1/evergreen.css" rel="stylesheet" />
   <link href="https://unpkg.com/sanitize.css@12.0.1/forms.evergreen.css" rel="stylesheet" />
   <link rel="stylesheet" href="/style.css">
-  <link rel="preload" href="/dots.svg" as="image">
+  <link rel="preload" href="/spinner.svg" as="image">
+  <link rel="prefetch" href="/dots.svg" as="image">
 </head>
 
 <body>
@@ -27,13 +28,10 @@
     <form id="logoutForm">
       <button>Logout</button>
     </form>
-    <section>
-      <h3>Date</h3>
-      <ul>
-        <li>dopaskdakdopa</li>
-        <li>dopaskdakdopa</li>
-      </ul>
-    </section>
+    <div id="loadingSessions">
+      <img src="/grid.svg">
+    </div>
+    <div id="dataSessions"></div>
   </main>
 
   <main id="withoutUser">
@@ -46,6 +44,7 @@
       <button autofocus>Sign In</button>
     </form>
   </main>
+  <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@0/dist/ua-parser.min.js"></script>
   <script src="main.js"></script>
 </body>
 

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../lib/config')
 const createSession = require('../lib/createSession')
 const findUserByUsername = require('../lib/findUserByUsername')
+const getUa = require('../lib/getUa')
 const httpResponse = require('../lib/httpResponse')
 
 exports.handler = async function (event, context) {
@@ -28,7 +29,9 @@ exports.handler = async function (event, context) {
 
     if (!isEqual) return httpResponse.UNAUTHORIZED
 
-    const { refreshToken, expiresIn } = await createSession(result._id)
+    const clientIp = event.headers['client-ip']
+    const userAgent = getUa(event.headers['user-agent'])
+    const { refreshToken, expiresIn } = await createSession(result._id, clientIp, userAgent)
     const accessToken = jwt.sign({ usr: result._id }, config.SECRET, { expiresIn: 300 })
 
     return {

@@ -4,7 +4,7 @@ const crypto = require('crypto')
 
 const getMongoClient = require('./getMongoClient')
 
-module.exports = async function createSession (userId) {
+module.exports = async function createSession (userId, ip, userAgent) {
   const mongoClient = await getMongoClient()
 
   const refreshToken = crypto.randomBytes(40).toString('hex')
@@ -15,6 +15,7 @@ module.exports = async function createSession (userId) {
     .collection('sessions')
     .insertOne({
       createBy: userId,
+      userAgent,
       expiresIn
     })
 
@@ -23,6 +24,7 @@ module.exports = async function createSession (userId) {
     .collection('tokens')
     .insertOne({
       sessionId: insertedId,
+      createByIp: ip,
       refreshToken,
       expiresIn
     })

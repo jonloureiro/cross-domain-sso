@@ -11,6 +11,10 @@ const request = {
   body: {
     username: 'example',
     password: '1'
+  },
+  headers: {
+    'client-ip': '192.168.0.2',
+    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.72 Safari/537.36'
   }
 }
 

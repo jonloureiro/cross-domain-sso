@@ -1,7 +1,7 @@
 'use strict'
 
 const httpResponse = require('../lib/httpResponse')
-const invalidateRefreshToken = require('../lib/invalidateRefreshToken')
+const invalidateSession = require('../lib/invalidateSession')
 
 const RESPONSE_DEFAULT = {
   statusCode: 200,
@@ -23,7 +23,7 @@ exports.handler = async function (event, context) {
   if (!accessToken) return RESPONSE_DEFAULT
 
   try {
-    await invalidateRefreshToken(accessToken)
+    await invalidateSession(accessToken)
     return RESPONSE_DEFAULT
   } catch (error) {
     return {

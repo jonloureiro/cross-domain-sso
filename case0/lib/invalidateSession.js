@@ -2,7 +2,7 @@
 
 const getMongoClient = require('./getMongoClient')
 
-module.exports = async function invalidateRefreshToken (refreshToken) {
+module.exports = async function invalidateSession (refreshToken) {
   const mongoClient = await getMongoClient()
 
   await mongoClient

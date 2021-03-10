@@ -4,7 +4,7 @@ const crypto = require('crypto')
 
 const createSession = require('../../lib/createSession')
 const getMongoClient = require('../../lib/getMongoClient')
-const invalidateRefreshToken = require('../../lib/invalidateRefreshToken')
+const invalidateSession = require('../../lib/invalidateSession')
 
 let mongoClient
 let mockUser
@@ -55,7 +55,7 @@ test('Create a refresh token', async () => {
 
 test('Invalidate refresh token', async () => {
   const { refreshToken, expiresIn } = await createSession(mockUser._id)
-  await invalidateRefreshToken(refreshToken)
+  await invalidateSession(refreshToken)
 
   const token = await mongoClient
     .db('cross-domain-sso')

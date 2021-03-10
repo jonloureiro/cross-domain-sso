@@ -35,6 +35,11 @@ h1, h2, h3 {
   padding: 0 16px;
 }
 
+li {
+  list-style-type: "\203A";
+  padding-left: 8px;
+}
+
 a {
   color: var(--dark);
 }

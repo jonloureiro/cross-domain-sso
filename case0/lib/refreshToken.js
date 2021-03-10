@@ -33,13 +33,16 @@ module.exports = async function refreshToken (refreshToken) {
       $set: { expiresIn }
     })
 
-  await Promise.all([
+  const [, updateSession] = await Promise.all([
     promiseInsertNewRefreshToken,
     promiseUpdateSession
   ])
 
+  const userId = updateSession.value.createBy
+
   return {
-    refreshToken: newRefreshToken,
+    userId,
+    newRefreshToken,
     expiresIn
   }
 }

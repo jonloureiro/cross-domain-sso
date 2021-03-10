@@ -52,4 +52,5 @@ test('Refresh token', async () => {
 
   expect(timestamp(updatedSession.expiresIn)).toBeGreaterThan(timestamp(session.expiresIn))
   expect(session.refreshToken).not.toBe(updatedSession.refreshToken)
+  expect(updatedSession.userId).toStrictEqual(mockUser._id)
 })

@@ -24,6 +24,9 @@ exports.handler = async function (event, context) {
     const sessions = await getSessions(usr)
     return {
       statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ sessions })
     }
   } catch (error) {

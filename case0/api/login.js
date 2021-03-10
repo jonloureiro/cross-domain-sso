@@ -33,7 +33,10 @@ exports.handler = async function (event, context) {
 
     return {
       statusCode: 200,
-      headers: { 'Set-Cookie': `token=${refreshToken}; Max-Age=${expiresIn}; Secure; HttpOnly;` },
+      headers: {
+        'Content-Type': 'application/json',
+        'Set-Cookie': `token=${refreshToken}; Max-Age=${expiresIn}; Secure; HttpOnly;`
+      },
       body: JSON.stringify({ access_token: accessToken })
     }
   } catch (error) {

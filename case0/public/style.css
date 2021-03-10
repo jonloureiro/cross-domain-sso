@@ -36,8 +36,12 @@ h1, h2, h3 {
 }
 
 li {
-  list-style-type: "\203A";
+  list-style-type: "\2717";
   padding-left: 8px;
+}
+
+li.valid {
+  list-style-type: "\2714";
 }
 
 a {

@@ -7,34 +7,68 @@ main()
 // #############################################################################
 function main () {
   const state = {
-    loading: false,
-    loadedSessions: false
+    initialLoading: true,
+    loadedSessions: false,
+    updatingUi: false
   }
-
   setInterval(() => updateUI(state), 200)
 
+  initState(state)
   initForms(state)
 }
 
 // #############################################################################
-function updateUI (state) {
+async function initState (state) {
+  const headers = new Headers()
+  headers.append('Content-Type', 'application/json')
+
+  const requestInit = {
+    credentials: 'include',
+    method: 'post',
+    headers
+  }
+
+  try {
+    const response = await fetch('/.netlify/functions/refresh', requestInit)
+    const body = await response.text()
+
+    if (!body) throw Error('Without access_token')
+
+    const data = JSON.parse(body)
+    if (!data.access_token) throw Error('Without access_token')
+
+    state.accessToken = data.access_token
+    await getSessions(state)
+  } catch (error) {
+    console.log(error)
+  }
+
+  state.initialLoading = false
+}
+
+// #############################################################################
+async function updateUI (state) {
+  if (state.initialLoading || state.updatingUi) return
+  state.updatingUi = true
+
   const mainLoading = document.getElementById('loading')
   const mainSessions = document.getElementById('withUser')
   const mainForm = document.getElementById('withoutUser')
-
-  if (state.loading) {
-    mainLoading.style.display = 'block'
-    mainForm.style.display = 'none'
-    mainSessions.style.display = 'none'
-    return
-  }
+  const logoutForm = document.getElementById('logoutForm')
+  const loadingSessions = document.getElementById('loadingSessions')
+  const dataSessions = document.getElementById('dataSessions')
 
   mainLoading.style.display = 'none'
 
   if (state.accessToken) {
-    getSessions(state)
     mainSessions.style.display = 'block'
     mainForm.style.display = 'none'
+    logoutForm.style.display = 'flex'
+    loadingSessions.style.display = 'none'
+    if (!dataSessions.innerHTML && state.sessions) {
+      dataSessions.innerHTML = renderSessions(state.sessions)
+      dataSessions.style.display = 'block'
+    }
   } else {
     mainForm.style.display = 'block'
     mainSessions.style.display = 'none'
@@ -42,6 +76,8 @@ function updateUI (state) {
     data.innerHTML = ''
     data.style.display = 'none'
   }
+
+  state.updatingUi = false
 }
 
 // #############################################################################
@@ -49,16 +85,6 @@ async function getSessions (state) {
   const logoutForm = document.getElementById('logoutForm')
   const loadingSessions = document.getElementById('loadingSessions')
   const dataSessions = document.getElementById('dataSessions')
-
-  if (state.loadedSessions) {
-    logoutForm.style.display = 'flex'
-    loadingSessions.style.display = 'none'
-    if (!dataSessions.innerHTML) {
-      dataSessions.innerHTML = renderSessions(state.sessions)
-      dataSessions.style.display = 'block'
-    }
-    return
-  }
 
   loadingSessions.style.display = 'flex'
   logoutForm.style.display = 'none'
@@ -79,26 +105,60 @@ async function getSessions (state) {
   if (body) {
     state.sessions = JSON.parse(body).sessions
     state.loadedSessions = true
-    console.log(state)
   }
 }
 
 // #############################################################################
 function renderSessions (sessions) {
-  const renderToken = (token) => `<li>${new Date(token.expiresIn).toLocaleString()}</li>`
+  if (sessions && !sessions.length) return ''
+
+  console.log(sessions)
+
+  const renderToken = (token) => {
+    const tokenDiff = getTimeDiff(token.expiresIn)
+    return `
+<li ${token.valid && 'class="valid"'}>
+  Accessed by ${token.createByIp}
+  <br>
+  ${tokenDiff ? 'Expires in ' + tokenDiff : 'Expired token'}
+</li>`
+  }
 
   let content = '<h2>Sessions</h2>'
   content += sessions.map(session =>
-`
-<section>
-  <h3>&#187; Last token expires in ${new Date(session.expiresIn).toLocaleString()}</h3>
+`<section>
+  <h3>
+    ${session.userAgent.browser} &#8226; ${session.userAgent.os} ${session.userAgent.cpu}
+    <small>(Valid until ${new Date(session.expiresIn).toLocaleString()})</small>
+  </h3>
   <ul>
-    ${session.tokens.map(renderToken).join()}
+    ${session.tokens.map(renderToken).join('')}
   </ul>
 </section><hr>`
   ).join('')
 
   return content
+}
+
+// #############################################################################
+function getTimeDiff (tokenTime) {
+  const msTokenTime = new Date(tokenTime).getTime()
+  const now = Date.now()
+
+  if (now > msTokenTime) return
+
+  const msDiff = msTokenTime - now
+
+  const h = Math.floor(msDiff / 1000 / 60 / 60)
+  const min = Math.floor((msDiff / 1000 / 60) % 60)
+  const s = Math.floor((msDiff / 1000) % 60)
+
+  let result = ''
+  result += h > 0 ? h + 'h ' : ''
+  result += min > 0 ? min + 'min ' : ''
+  result += s > 0 ? s + 's' : ''
+
+  return result.trim()
 }
 
 // #############################################################################
@@ -167,9 +227,15 @@ function initForms (state) {
     try {
       const response = await fetch('/.netlify/functions/login', requestInit)
       if (!response.ok) throw Error(`${response.status} ${response.statusText}`)
-      const data = await response.json()
+
+      const body = await response.text()
+      if (!body) throw Error('Without access_token')
+
+      const data = JSON.parse(body)
+      if (!data.access_token) throw Error('Without access_token')
+
       state.accessToken = data.access_token
-      console.log(data)
+      await getSessions(state)
     } catch (error) {
       console.log(error)
     }
@@ -177,12 +243,12 @@ function initForms (state) {
     passwordInput.disabled = false
     loginButton.disabled = false
     loginButton.innerHTML = loginButtonText
-    loginForm.reset()
     usernameInput.focus()
   }
 
   document.getElementById('reloadSession').onclick = (event) => {
     event.preventDefault()
     state.loadedSessions = false
+    getSessions(state)
   }
 }

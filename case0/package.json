@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "dev": "jest --watch",
     "test": "jest",
     "lint": "standard --fix"
   },

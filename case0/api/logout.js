@@ -20,12 +20,12 @@ exports.handler = async function (event, context) {
 
   if (!event.headers.cookie) return RESPONSE_DEFAULT
 
-  const [, accessToken] = event.headers.cookie.split('=')
+  const [, refreshToken] = event.headers.cookie.split('=')
 
-  if (!accessToken) return RESPONSE_DEFAULT
+  if (!refreshToken) return RESPONSE_DEFAULT
 
   try {
-    await invalidateSession(accessToken)
+    await invalidateSession(refreshToken)
     return RESPONSE_DEFAULT
   } catch (error) {
     return {

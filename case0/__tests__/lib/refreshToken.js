@@ -53,7 +53,7 @@ test('Create a refresh token', async () => {
   expect(expiresIn.toString()).toBe(token.expiresIn.toString())
 })
 
-test('Invalidate refresh token', async () => {
+test('Invalidate session', async () => {
   const { refreshToken, expiresIn } = await createSession(mockUser._id)
   await invalidateSession(refreshToken)
 
@@ -62,10 +62,17 @@ test('Invalidate refresh token', async () => {
     .collection('tokens')
     .findOne({ refreshToken })
 
+  const session = await mongoClient
+    .db('cross-domain-sso')
+    .collection('sessions')
+    .findOne({ _id: token.sessionId })
+
   function timestamp (date) {
     return (new Date(date)).getTime()
   }
 
   expect(timestamp(expiresIn)).toBeGreaterThan(timestamp(token.expiresIn))
+  expect(timestamp(expiresIn)).toBeGreaterThan(timestamp(session.expiresIn))
   expect(Date.now()).toBeGreaterThan(timestamp(token.expiresIn))
+  expect(Date.now()).toBeGreaterThan(timestamp(session.expiresIn))
 })

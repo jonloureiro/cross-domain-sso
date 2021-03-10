@@ -15,7 +15,7 @@ module.exports = async function createSession (userId) {
     .collection('sessions')
     .insertOne({
       createBy: userId,
-      lastExpiresIn: expiresIn
+      expiresIn
     })
 
   await mongoClient

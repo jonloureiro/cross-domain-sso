@@ -106,6 +106,10 @@ function initForms (state) {
   const loginForm = document.getElementById('loginForm')
   const logoutForm = document.getElementById('logoutForm')
 
+  const params = new URLSearchParams(window.location.search)
+  const usr = params.get('usr')
+  if (usr) loginForm[0].value = usr
+
   logoutForm.onsubmit = async (event) => {
     event.preventDefault()
 

@@ -3,6 +3,8 @@
 /* global fetch */
 
 main()
+
+// #############################################################################
 function main () {
   const state = {
     loading: false
@@ -13,7 +15,7 @@ function main () {
   initForms(state)
 }
 
-// ##################################################
+// #############################################################################
 function updateUI (state) {
   const mainLoading = document.getElementById('loading')
   const mainSessions = document.getElementById('withUser')
@@ -37,7 +39,7 @@ function updateUI (state) {
   }
 }
 
-// ##################################################
+// #############################################################################
 function initForms (state) {
   const loginForm = document.getElementById('loginForm')
   const logoutForm = document.getElementById('logoutForm')
@@ -61,7 +63,8 @@ function initForms (state) {
       if (!response.ok) throw Error(`${response.status} ${response.statusText}`)
 
       state.accessToken = undefined
-      console.log(response)
+      const body = await response.text()
+      if (body) console.log(JSON.parse(body))
     } catch (error) {
       console.log(error)
     }

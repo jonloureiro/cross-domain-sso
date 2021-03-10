@@ -36,7 +36,7 @@ afterEach(async () => {
     .deleteOne({ _id: mockUser._id })
 })
 
-test('Create a refresh token', async () => {
+test('Create a session', async () => {
   const { refreshToken, expiresIn } = await createSession(mockUser._id)
 
   const session = await mongoClient
@@ -53,7 +53,7 @@ test('Create a refresh token', async () => {
   expect(expiresIn.toString()).toBe(token.expiresIn.toString())
 })
 
-test('Invalidate session', async () => {
+test('Invalidate a session', async () => {
   const { refreshToken, expiresIn } = await createSession(mockUser._id)
   await invalidateSession(refreshToken)
 

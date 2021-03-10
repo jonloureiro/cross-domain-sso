@@ -38,22 +38,31 @@ function updateUI (state) {
   } else {
     mainForm.style.display = 'block'
     mainSessions.style.display = 'none'
-    document.getElementById('dataSessions').innerHTML = ''
+    const data = document.getElementById('dataSessions')
+    data.innerHTML = ''
+    data.style.display = 'none'
   }
 }
 
 // #############################################################################
 async function getSessions (state) {
+  const logoutForm = document.getElementById('logoutForm')
   const loadingSessions = document.getElementById('loadingSessions')
   const dataSessions = document.getElementById('dataSessions')
 
   if (state.loadedSessions) {
+    logoutForm.style.display = 'flex'
     loadingSessions.style.display = 'none'
-    dataSessions.style.display = 'block'
+    if (!dataSessions.innerHTML) {
+      dataSessions.innerHTML = renderSessions(state.sessions)
+      dataSessions.style.display = 'block'
+    }
     return
   }
 
   loadingSessions.style.display = 'flex'
+  logoutForm.style.display = 'none'
+  dataSessions.innerHTML = ''
   dataSessions.style.display = 'none'
 
   const headers = new Headers()
@@ -71,7 +80,6 @@ async function getSessions (state) {
     state.sessions = JSON.parse(body).sessions
     state.loadedSessions = true
     console.log(state)
-    renderSessions(state.sessions)
   }
 }
 
@@ -79,18 +87,18 @@ async function getSessions (state) {
 function renderSessions (sessions) {
   const renderToken = (token) => `<li>${new Date(token.expiresIn).toLocaleString()}</li>`
 
-  const content = sessions.map(session =>
+  let content = '<h2>Sessions</h2>'
+  content += sessions.map(session =>
 `
 <section>
-  <h3>Session: expires in: ${new Date(session.expiresIn).toLocaleString()}</h3>
+  <h3>&#187; Last token expires in ${new Date(session.expiresIn).toLocaleString()}</h3>
   <ul>
     ${session.tokens.map(renderToken).join()}
   </ul>
-</section>`
-  ).join('<hr>')
+</section><hr>`
+  ).join('')
 
-  const dataSessions = document.getElementById('dataSessions')
-  dataSessions.innerHTML = content
+  return content
 }
 
 // #############################################################################
@@ -167,5 +175,10 @@ function initForms (state) {
     loginButton.innerHTML = loginButtonText
     loginForm.reset()
     usernameInput.focus()
+  }
+
+  document.getElementById('reloadSession').onclick = (event) => {
+    event.preventDefault()
+    state.loadedSessions = false
   }
 }

@@ -35,7 +35,7 @@ afterEach(async () => {
     .deleteOne({ _id: mockUser._id })
 })
 
-test('Refresh token', async () => {
+test('With refresh token', async () => {
   const session = await createSession(mockUser._id)
 
   const dateNow = Date.now()
@@ -43,6 +43,11 @@ test('Refresh token', async () => {
     .mockImplementation(() => (dateNow + 300000))
 
   const updatedSession = await refreshToken(session.refreshToken)
+
+  const oldToken = await mongoClient
+    .db('cross-domain-sso')
+    .collection('tokens')
+    .findOne({ refreshToken: session.refreshToken })
 
   dateNowSpy.mockRestore()
 
@@ -53,4 +58,9 @@ test('Refresh token', async () => {
   expect(timestamp(updatedSession.expiresIn)).toBeGreaterThan(timestamp(session.expiresIn))
   expect(session.refreshToken).not.toBe(updatedSession.refreshToken)
   expect(updatedSession.userId).toStrictEqual(mockUser._id)
+  expect(oldToken.valid).toBeFalsy()
+})
+
+test('Without a refresh token', async () => {
+  await expect(refreshToken()).rejects.toThrow()
 })

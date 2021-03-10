@@ -26,7 +26,8 @@ module.exports = async function createSession (userId, ip, userAgent) {
       sessionId: insertedId,
       createByIp: ip,
       refreshToken,
-      expiresIn
+      expiresIn,
+      valid: true
     })
 
   return {

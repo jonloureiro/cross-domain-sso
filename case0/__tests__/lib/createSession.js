@@ -54,7 +54,7 @@ test('Create a session', async () => {
 })
 
 test('Invalidate a session', async () => {
-  const { refreshToken, expiresIn } = await createSession(mockUser._id)
+  const { refreshToken } = await createSession(mockUser._id)
   await invalidateSession(refreshToken)
 
   const token = await mongoClient
@@ -62,17 +62,14 @@ test('Invalidate a session', async () => {
     .collection('tokens')
     .findOne({ refreshToken })
 
-  const session = await mongoClient
-    .db('cross-domain-sso')
-    .collection('sessions')
-    .findOne({ _id: token.sessionId })
+  // const session = await mongoClient
+  //   .db('cross-domain-sso')
+  //   .collection('sessions')
+  //   .findOne({ _id: token.sessionId })
 
-  function timestamp (date) {
-    return (new Date(date)).getTime()
-  }
+  // function timestamp (date) {
+  //   return (new Date(date)).getTime()
+  // }
 
-  expect(timestamp(expiresIn)).toBeGreaterThan(timestamp(token.expiresIn))
-  expect(timestamp(expiresIn)).toBeGreaterThan(timestamp(session.expiresIn))
-  expect(Date.now()).toBeGreaterThan(timestamp(token.expiresIn))
-  expect(Date.now()).toBeGreaterThan(timestamp(session.expiresIn))
+  expect(token.valid).toBeFalsy()
 })

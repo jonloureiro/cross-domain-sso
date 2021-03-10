@@ -5,6 +5,7 @@
 const jwt = require('jsonwebtoken')
 
 const config = require('../lib/config')
+const getUa = require('../lib/getUa')
 const httpResponse = require('../lib/httpResponse')
 const refreshToken = require('../lib/refreshToken')
 
@@ -15,12 +16,14 @@ exports.handler = async function (event, context) {
 
   if (!event.headers.cookie) return httpResponse.UNAUTHORIZED
 
-  const [, accessToken] = event.headers.cookie.split('=')
+  const [, oldRefreshToken] = event.headers.cookie.split('=')
 
   if (!event.headers.cookie) return httpResponse.UNAUTHORIZED
 
   try {
-    const { userId, newRefreshToken, expiresIn } = await refreshToken(accessToken)
+    const clientIp = event.headers['client-ip']
+    const userAgent = getUa(event.headers['user-agent'])
+    const { userId, newRefreshToken, expiresIn } = await refreshToken(oldRefreshToken, clientIp, userAgent)
     const newAccessToken = jwt.sign({ usr: userId }, config.SECRET, { expiresIn: 300 })
 
     return {
@@ -33,6 +36,6 @@ exports.handler = async function (event, context) {
     }
   } catch (error) {
     console.log(error)
-    return httpResponse.SERVICE_UNAVAILABLE
+    return httpResponse.UNAUTHORIZED
   }
 }
